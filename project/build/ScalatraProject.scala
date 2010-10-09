@@ -8,12 +8,14 @@ class ScalatraProject(info: ProjectInfo)
   extends ParentProject(info)
   with GpgPlugin
   with ChecksumPlugin
+  with IdeaProject
 {
   override def shouldCheckOutputDirectories = false
 
   val jettyGroupId = "org.mortbay.jetty"
   val jettyVersion = "6.1.22"
   val slf4jVersion = "1.6.0"
+  val atmosphereVersion = "0.6.3"
 
   trait UnpublishedProject
     extends BasicManagedProject
@@ -29,6 +31,7 @@ class ScalatraProject(info: ProjectInfo)
     extends BasicScalaProject 
     with BasicPackagePaths 
     with GpgPlugin
+    with IdeaProject
     with ChecksumPlugin
   {
     def description: String
@@ -65,6 +68,13 @@ class ScalatraProject(info: ProjectInfo)
   class ScentryProject(info: ProjectInfo) extends DefaultProject(info) with ScalatraSubProject {
     val mockito = "org.mockito" % "mockito-all" % "1.8.4" % "test"
     val description = "Supplies optional Scalatra authentication support"
+  }
+
+  lazy val comet = project("comet", "scalatra-atmosphere", new AtmosphereProject(_), core)
+  class AtmosphereProject(info: ProjectInfo) extends DefaultProject(info) with ScalatraSubProject {
+    val atmosphere = "org.atmosphere" % "atmosphere-runtime" % atmosphereVersion
+    val mockito = "org.mockito" % "mockito-all" % "1.8.4" % "test"
+    val description = "Supplies optional Scalatra comet/websocket support"
   }
 
   lazy val fileupload = project("fileupload", "scalatra-fileupload", new FileuploadProject(_), core, scalatest)
@@ -205,7 +215,7 @@ class ScalatraProject(info: ProjectInfo)
 
   override def managedStyle = ManagedStyle.Maven
   val publishTo = {
-    val local = System.getenv("SOCIALINSIGHT_HOME")
+    val local = System.getenv("MOJOLLY_HOME")
     if(local == null || local.trim.length == 0 || local == ".") {
       Credentials(Path.userHome / ".ivy2" / "credentials" / "oss.sonatype.org", log)
       if (version.toString.endsWith("-SNAPSHOT"))
