@@ -21,7 +21,7 @@
     <url-pattern>/js/*</url-pattern>
   </servlet-mapping>
 
-  <!-- 
+  <!--
     Demonstrates how to use Scalatra as a filter rather than as a Servlet.
     Typically, you would run Scalatra as either a servlet or a filter, but
     not both in the same app.  
@@ -34,5 +34,6 @@
     <filter-name>FilterExample</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
+
 
 </web-app>

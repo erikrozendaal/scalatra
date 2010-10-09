@@ -14,6 +14,8 @@ class ScalatraProject(info: ProjectInfo)
 
   val jettyGroupId = "org.mortbay.jetty"
   val jettyVersion = "6.1.22"
+  val jetty7GroupId = "org.eclipse.jetty"
+  val jetty7Version = "7.1.6.v20100715"
   val slf4jVersion = "1.6.0"
   val atmosphereVersion = "0.6.3"
 
@@ -70,7 +72,7 @@ class ScalatraProject(info: ProjectInfo)
     val description = "Supplies optional Scalatra authentication support"
   }
 
-  lazy val comet = project("comet", "scalatra-atmosphere", new AtmosphereProject(_), core)
+  lazy val push = project("comet", "scalatra-atmosphere", new AtmosphereProject(_), core)
   class AtmosphereProject(info: ProjectInfo) extends DefaultProject(info) with ScalatraSubProject {
     val atmosphere = "org.atmosphere" % "atmosphere-runtime" % atmosphereVersion
     val mockito = "org.mockito" % "mockito-all" % "1.8.4" % "test"
@@ -97,9 +99,19 @@ class ScalatraProject(info: ProjectInfo)
   lazy val example = project("example", "scalatra-example", new ExampleProject(_), core, fileupload, scalate)
   class ExampleProject(info: ProjectInfo) extends DefaultWebProject(info) with ScalatraSubProject with UnpublishedProject {
     val jetty6 = jettyGroupId % "jetty" % jettyVersion % "test"
-    val sfl4japi = "org.slf4j" % "slf4j-api" % slf4jVersion % "compile" 
+    val sfl4japi = "org.slf4j" % "slf4j-api" % slf4jVersion % "compile"
     val sfl4jnop = "org.slf4j" % "slf4j-nop" % slf4jVersion % "runtime"
     val description = "An example Scalatra application"
+  }
+
+
+  lazy val pushExample = project("push-example", "scalatra-push-example", new PushExampleProject(_), core, scalate, push)
+  class PushExampleProject(info: ProjectInfo) extends DefaultWebProject(info) with ScalatraSubProject with UnpublishedProject {
+    val jetty7 = jetty7GroupId % "jetty-webapp" % jetty7Version % "test"
+    val atmoJquery = "org.atmosphere" % "atmosphere-jquery" % atmosphereVersion % "runtime"
+    val sfl4japi = "org.slf4j" % "slf4j-api" % slf4jVersion % "compile"
+    val sfl4jnop = "org.slf4j" % "slf4j-nop" % slf4jVersion % "runtime"
+    val description = "An example Scalatra application with comet/websocket support"
   }
 
   lazy val website = project("website", "scalatra-website", new WebsiteProject(_), core, scalate)

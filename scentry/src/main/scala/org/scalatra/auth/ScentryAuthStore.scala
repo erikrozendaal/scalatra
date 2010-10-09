@@ -29,21 +29,15 @@ object ScentryAuthStore {
 
     private def buildCookieString(value: String) = {
       val sb = new StringBuffer
-      sb append Scentry.scentryAuthKey
-      sb append "="
-      sb append value
       // I couldn't figure out how to use the classes for this so building my own string. It's been around for years now
-      sb append "; HttpOnly"
+      sb append Scentry.scentryAuthKey append "=" append value append "; HttpOnly"
       if (secureOnly) sb append "; secure"
       sb.toString
     }
 
     private def buildInvalidateCookieString = {
       val sb = new StringBuffer
-      sb append Scentry.scentryAuthKey
-      sb append "="
-      // I couldn't figure out how to use the classes for this so building my own string. It's been around for years now
-      sb append "; HttpOnly; Max-Age=0"
+      sb append Scentry.scentryAuthKey append "=" append "; HttpOnly; Max-Age=0"
       if (secureOnly) sb append "; secure"
       sb.toString
     }

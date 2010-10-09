@@ -6,18 +6,17 @@ import java.util.Locale
 trait CSRFTokenSupport { self: ScalatraKernel =>
 
   private val WRITE_METHODS = "POST" :: "PUT" :: "DELETE" :: Nil
-  private val CSRF_KEY = "csrfToken"
 
   before {
     if (WRITE_METHODS.contains(request.getMethod.toUpperCase(Locale.ENGLISH)) &&
-            session(CSRF_KEY) != params.get(CSRF_KEY))
+            session(ScalatraKernel.CSRFKey) != params.get(ScalatraKernel.CSRFKey))
       halt(403, "Request tampering detected!")
     prepareCSRFToken
   }
 
   protected def prepareCSRFToken = {
     val token = generateCSRFToken
-    session(CSRF_KEY) = token
+    session(ScalatraKernel.CSRFKey) = token
   }
 
   private def hexEncode(bytes: Array[Byte]) =  ((new StringBuilder(bytes.length * 2) /: bytes) { (sb, b) =>

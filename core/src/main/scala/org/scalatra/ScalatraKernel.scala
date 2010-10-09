@@ -16,6 +16,7 @@ object ScalatraKernel
   val httpMethods = List("GET", "POST", "PUT", "DELETE")
 
   val EnvironmentKey = "org.scalatra.environment"
+  val CSRFKey = "csrfToken"
 }
 import ScalatraKernel._
 
