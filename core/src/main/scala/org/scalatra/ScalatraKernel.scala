@@ -119,20 +119,18 @@ trait ScalatraKernel extends Handler with Initializable
     _request.withValue(request) {
       _response.withValue(response) {
         _multiParams.withValue(Map() ++ realMultiParams) {
-          val result = try {
+          try {
             beforeFilters foreach { _() }
-            Routes(effectiveMethod).toStream.flatMap { _(requestPath) }.headOption.getOrElse(doNotFound())
+            renderResponse(Routes(effectiveMethod).toStream.flatMap { _(requestPath) }.headOption.getOrElse(doNotFound()))
           }
           catch {
             case HaltException(Some(code), Some(msg)) => response.sendError(code, msg)
             case HaltException(Some(code), None) => response.sendError(code)
             case HaltException(None, _) =>
-            case e => handleError(e)
-          }
-          finally {
+            case e => renderResponse(handleError(e))
+          } finally {
             afterFilters foreach { _() }
           }
-          renderResponse(result)
         }
       }
     }
